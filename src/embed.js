@@ -180,15 +180,29 @@ function createForm() {
     <div style="display: flex; flex-wrap: wrap; justify-content: space-around; margin: 10px 0;">
       <div style="display: flex; flex-wrap: wrap; padding: 5px 0;">
         <label for="monthPicker" style="${labelStyle}">Month:</label>
-        <select name="month" id="monthPicker" value="${monthNow}" style="${inputStyle}">
-          ${months.map((m) => `<option value="${m}">${m}</option>`).join("")}
+        <select name="month" id="monthPicker" style="${inputStyle}">
+          ${months
+            .map(
+              (m) =>
+                `<option value="${m}" ${
+                  m === monthNow ? "selected" : ""
+                }>${m}</option>`
+            )
+            .join("")}
         </select>
       </div>
 
       <div style="display: flex; flex-wrap: wrap; padding: 5px 0;">
         <label for="yearPicker" style="${labelStyle}">Year:</label>
-        <select name="year" id="yearPicker" value="${yearNow.toString()}" style="${inputStyle}">
-          ${years.map((y) => `<option value="${y}">${y}</option>`).join("")}
+        <select name="year" id="yearPicker" style="${inputStyle}">
+          ${years
+            .map(
+              (y) =>
+                `<option value="${y}" ${
+                  y === yearNow.toString() ? "selected" : ""
+                }>${y}</option>`
+            )
+            .join("")}
         </select>
       </div>
     </div>
