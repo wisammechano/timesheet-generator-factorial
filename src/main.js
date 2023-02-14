@@ -19,7 +19,7 @@ embed(allocations, (e) => {
   const year = data.get("year");
 
   // Apr 2021
-  const refDate = dayjs(`${month} ${year}`);
+  const refDate = dayjs(`01 ${month} ${year}`);
   const allocations = [];
 
   // allocations
