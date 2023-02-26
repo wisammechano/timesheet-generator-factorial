@@ -4,7 +4,7 @@ const Tabs = ({ tabs, children, defaultTab }) => {
   const [currentTab, setTab] = useState(defaultTab || 0);
 
   const tabClassNames = [
-    "w-1/3 py-1 mb-2 flex flex-col justify-between items-center border border-solid border-gray-300",
+    "w-1/3 py-1 mb-2 flex flex-col justify-between items-center border border-solid border-gray-300 cursor-pointer",
     "border-l-0 first:border-l bg-gray-200",
   ].join(" ");
   const activeTabClassNames = [

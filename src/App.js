@@ -12,7 +12,13 @@ function App() {
   const [settings] = useSettings();
 
   let defaultTab = 0;
-  if (!(settings && settings["projects"] && settings["projects"].length > 0)) {
+  if (
+    !(
+      settings &&
+      settings["projects"] &&
+      settings["projects"].filter(Boolean).length > 0
+    )
+  ) {
     defaultTab = 2;
   }
 
