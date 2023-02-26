@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import { useSettings } from "./SettingsHOC";
 
-const Tabs = ({ tabs, children }) => {
-  const [settings] = useSettings();
-  let defaultTab = 0;
-  if (!(settings && settings["projects"] && settings["projects"].length > 0)) {
-    defaultTab = 3;
-  }
-
-  const [currentTab, setTab] = useState(defaultTab);
+const Tabs = ({ tabs, children, defaultTab }) => {
+  const [currentTab, setTab] = useState(defaultTab || 0);
 
   const tabClassNames = [
     "w-1/3 py-1 mb-2 flex flex-col justify-between items-center border border-solid border-gray-300",

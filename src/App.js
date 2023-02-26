@@ -5,9 +5,16 @@ import FormTab from "./components/FormTab";
 import MeTab from "./components/MeTab";
 import ProjectsTab from "./components/ProjectsTab";
 import Tabs from "./components/Tabs";
+import { useSettings } from "./components/SettingsHOC";
 
 function App() {
   const [showModal, setShowModal] = useState(false);
+  const [settings] = useSettings();
+
+  let defaultTab = 0;
+  if (!(settings && settings["projects"] && settings["projects"].length > 0)) {
+    defaultTab = 2;
+  }
 
   return (
     <div className="App">
@@ -17,7 +24,7 @@ function App() {
         show={showModal}
         title="Fill Timesheet"
       >
-        <Tabs tabs={TABS}>
+        <Tabs tabs={TABS} defaultTab={defaultTab}>
           <FormTab />
           <MeTab />
           <ProjectsTab />
