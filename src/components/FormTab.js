@@ -37,7 +37,7 @@ const FormTab = () => {
       (await Renderer.toPDF(employee, month, year)).download();
     } else {
       alert(
-        "You have 0 allocations. Please allocate a project for " + employee.name
+        employee.name + " has 0 allocations. Please allocate a project first"
       );
     }
   };
