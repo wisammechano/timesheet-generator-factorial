@@ -1,8 +1,4 @@
-import React, { useState } from "react";
-
-const Tabs = ({ tabs, children, defaultTab }) => {
-  const [currentTab, setTab] = useState(defaultTab || 0);
-
+const Tabs = ({ tabs, children, currentTab, onTabChange }) => {
   const tabClassNames = [
     "w-1/3 py-1 mb-2 flex flex-col justify-between items-center border border-solid border-gray-300 cursor-pointer",
     "border-l-0 first:border-l bg-gray-200",
@@ -19,7 +15,7 @@ const Tabs = ({ tabs, children, defaultTab }) => {
             role="tab"
             aria-selected={currentTab === idx}
             key={tab.name}
-            onClick={() => setTab(idx)}
+            onClick={() => onTabChange(idx)}
             className={`${tabClassNames} ${
               currentTab === idx && activeTabClassNames
             }`}

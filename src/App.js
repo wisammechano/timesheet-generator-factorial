@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FAB from "./components/FAB";
 import Modal from "./components/Modal";
 import FormTab from "./components/FormTab";
@@ -10,17 +10,19 @@ import { useSettings } from "./components/SettingsHOC";
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [settings] = useSettings();
+  const [currentTab, setTab] = useState(0);
 
-  let defaultTab = 0;
-  if (
-    !(
-      settings &&
-      settings["projects"] &&
-      settings["projects"].filter(Boolean).length > 0
-    )
-  ) {
-    defaultTab = 2;
-  }
+  useEffect(() => {
+    if (
+      !(
+        settings &&
+        settings["projects"] &&
+        settings["projects"].filter(Boolean).length > 0
+      )
+    ) {
+      setTab(2);
+    }
+  }, [settings]);
 
   return (
     <div className="App">
@@ -30,7 +32,11 @@ function App() {
         show={showModal}
         title="Fill Timesheet"
       >
-        <Tabs tabs={TABS} defaultTab={defaultTab}>
+        <Tabs
+          tabs={TABS}
+          currentTab={currentTab}
+          onTabChange={(idx) => setTab(idx)}
+        >
           <FormTab />
           <MeTab />
           <ProjectsTab />
