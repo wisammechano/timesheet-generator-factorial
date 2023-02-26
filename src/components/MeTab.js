@@ -17,12 +17,18 @@ const MeTab = () => {
   const onSubmit = async (data) => {
     const { month, year, allocations } = data;
     // employee.setAllocations(allocations);
-    setSetting("allocations", {
-      ...allAllocations,
-      [employee.id]: allocations,
-    });
+    if (allocations.length > 0) {
+      setSetting("allocations", {
+        ...allAllocations,
+        [employee.id]: allocations,
+      });
 
-    (await Renderer.toPDF(employee, month, year)).download();
+      (await Renderer.toPDF(employee, month, year)).download();
+    } else {
+      alert(
+        employee.name + " has 0 allocations. Please allocate a project first"
+      );
+    }
   };
 
   return (
