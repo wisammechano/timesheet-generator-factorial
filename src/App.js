@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import FAB from "./components/FAB";
 import Modal from "./components/Modal";
 import FormTab from "./components/FormTab";
-import MeTab from "./components/MeTab";
 import ProjectsTab from "./components/ProjectsTab";
 import Tabs from "./components/Tabs";
 import { useSettings } from "./components/SettingsHOC";
@@ -37,8 +36,8 @@ function App() {
           currentTab={currentTab}
           onTabChange={(idx) => setTab(idx)}
         >
-          <FormTab />
-          <MeTab />
+          <FormTab key="all" isCurrentEmployee={false} />
+          <FormTab key="current" isCurrentEmployee={true} />
           <ProjectsTab />
         </Tabs>
       </Modal>
