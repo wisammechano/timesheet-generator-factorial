@@ -53,7 +53,6 @@ module.exports = {
         }
 
         // Get rid of code-split chunks
-        config.optimization.minimize = false;
         config.optimization.splitChunks = {
           // chunks: 'all',
           // name: false,
