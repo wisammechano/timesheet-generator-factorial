@@ -25,7 +25,13 @@ const Tabs = ({ tabs, children, currentTab, onTabChange }) => {
           </div>
         ))}
       </div>
-      {children[currentTab]}
+      {children.map((child, idx) => {
+        return (
+          <div key={idx} className={currentTab === idx ? "block" : "hidden"}>
+            {child}
+          </div>
+        );
+      })}
     </div>
   );
 };

@@ -15,6 +15,11 @@ export const months = [
   "December",
 ];
 
+export const strToObj = (op) => ({
+  label: op,
+  value: op,
+});
+
 export const dataUriToBuffer = (uri) => {
   if (!/^data:/i.test(uri)) {
     throw new TypeError(

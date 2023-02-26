@@ -17,6 +17,10 @@ class Factorial {
     "saturday",
   ];
 
+  static defaultWorkDays = Factorial.weekdays
+    .filter((day) => day !== "sunday" && day !== "saturday")
+    .join(",");
+
   static instance;
 
   constructor() {
@@ -40,18 +44,6 @@ class Factorial {
       console.error(err);
       return;
     }
-
-    const terminatedUsers = [];
-
-    instance.employees = instance.employees.filter((em) => {
-      const remove = em.terminated_on || em.is_terminating;
-      remove && terminatedUsers.push(em.access_id);
-      return !remove;
-    });
-
-    instance.users = instance.users.filter(
-      (user) => !terminatedUsers.includes(user.id)
-    );
 
     instance.initialized = true;
 
@@ -84,11 +76,40 @@ class Factorial {
     return this.employees.find((e) => e.id?.toString() === id?.toString());
   }
 
-  getEmployees() {
+  getAllEmployees() {
     if (!this.initialized)
       throw new Error("Instance is not initialized. Please call .load()");
 
     return this.employees;
+  }
+
+  getEmployees(month, year) {
+    if (!this.initialized)
+      throw new Error("Instance is not initialized. Please call .load()");
+
+    // returns employees working and not terminated in the range
+    // 01 Jan 2020
+    const refDateStart = dayjs(`01 ${month} ${year}`);
+
+    // 01 Feb 2020
+    const refDateEnd = refDateStart
+      .clone()
+      .set("month", refDateStart.month() + 1);
+
+    return this.employees.filter((em) => {
+      if (em.terminated_on) {
+        const terminationDate = dayjs(em.terminated_on);
+        return terminationDate.unix() > refDateStart.unix();
+      }
+
+      // example 2019-06-16
+      if (em.hired_on) {
+        const hireDate = dayjs(em.hired_on);
+        return hireDate.unix() < refDateEnd.unix();
+      }
+
+      return true;
+    });
   }
 
   getUser(id) {

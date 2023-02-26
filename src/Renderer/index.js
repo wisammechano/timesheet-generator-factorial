@@ -15,7 +15,7 @@ class Renderer {
     renderer.stream = await renderer.pdf.toStream();
 
     renderer.fileName = `${
-      employee.name
+      employee.fullname
     } - Re-Coded - Timesheet - ${refDate.format("YYYY")} - ${refDate.format(
       "MMMM"
     )}`;
@@ -43,7 +43,7 @@ class Renderer {
   }
 
   meta() {
-    const { name, managerName, hiredOn } = this.employee;
+    const { fullname, managerName, hiredOn } = this.employee;
 
     const startDate = (
       hiredOn.unix() >= this.refDate.unix() ? hiredOn : this.refDate
@@ -52,7 +52,7 @@ class Renderer {
     const month = this.refDate.format("MMMM");
 
     this.data.meta = {
-      name,
+      name: fullname,
       managerName,
       startDate,
       month,
@@ -89,15 +89,20 @@ class Renderer {
   rows() {
     this.data.rows = [];
     const daysInMonth = this.refDate.daysInMonth();
-    const { hiredOn } = this.employee;
+    const { hiredOn, terminatedOn } = this.employee;
 
     const renderProps = { textAlign: "center" };
 
     for (let i = 0; i < daysInMonth; i++) {
       const day = this.refDate.clone().set("date", i + 1);
 
-      // Shouldn't generate rows for days not hired
-      if (day.unix() < hiredOn.unix()) {
+      // Shouldn't generate rows for days before hireDate
+      if (hiredOn && day.unix() < hiredOn.unix()) {
+        continue;
+      }
+
+      // Shouldn't generate rows for days on and after terminationDate
+      if (terminatedOn && day.unix() >= terminatedOn.unix()) {
         continue;
       }
 

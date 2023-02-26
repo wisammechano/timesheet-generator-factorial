@@ -27,7 +27,12 @@ class Employee {
     }
 
     this.profile = factorial.getUser(this.userId);
-    this.name = `${this.profile.first_name} ${this.profile.last_name}`;
+    this.firstName = this.profile.first_name;
+    this.lastName = this.profile.last_name;
+    this.preferredName = employee.preferred_name || this.firstName;
+    this.fullname = `${this.firstName} ${this.lastName}`;
+    this.displayName = `${this.preferredName} ${this.lastName}`;
+    this.name = this.fullname; // backward compat
 
     this.hiredOn = dayjs(employee.hired_on || "2017-01-01");
     this.isTerminated = !!employee.terminated_on;
@@ -52,7 +57,20 @@ class Employee {
     if (!this.contracts) {
       this.contracts = await Factorial.getContracts(this.id);
       this.currentContract = this.contracts.at(-1);
-      this.workingDays = this.currentContract.working_week_days.split(",");
+
+      // Some employees have workdays empty
+      let workDays = this.currentContract.working_week_days;
+      if (!workDays) {
+        console.warn(
+          "Employee",
+          this.displayName,
+          "has no working days assigned"
+        );
+        workDays = Factorial.defaultWorkDays;
+      }
+
+      this.workingDays = workDays.split(",");
+
       this.weekendDays = Factorial.weekdays.filter(
         (day) => !this.workingDays.includes(day)
       );

@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
-import { months } from "../utils";
-
-const yearNow = new Date().getFullYear();
-const monthNow = months.at(new Date().getMonth() - 1);
-const years = new Array(4).fill(yearNow).map((y, i) => (y - i).toString());
-const formId = "timesheetForm";
+import { strToObj } from "../utils";
 
 const emptyAlloc = [
   {
@@ -14,11 +9,6 @@ const emptyAlloc = [
     allocation: -1,
   },
 ];
-
-const strToObj = (op) => ({
-  label: op,
-  value: op,
-});
 
 const Form = ({
   projects: savedProjects,
@@ -67,10 +57,6 @@ const Form = ({
 
   const onSubmitInternal = (e) => {
     e.preventDefault();
-    const form = e.target;
-    const data = new FormData(form);
-    const month = data.get("month");
-    const year = data.get("year");
 
     const finalAllocations = allocations
       .filter(
@@ -81,38 +67,14 @@ const Form = ({
         return alloc;
       });
 
-    onSubmit({ month, year, allocations: finalAllocations });
+    onSubmit({ allocations: finalAllocations });
   };
 
   return (
     <form
       className="flex flex-col gap-5 justify-around my-3 w-full px-2"
-      id={formId}
       onSubmit={onSubmitInternal}
     >
-      <div className="grid grid-cols-12 items-center my-1">
-        <Label label="Month" htmlFor="ts-month-select" className="col-span-2" />
-        <Select
-          name="month"
-          className="col-span-3"
-          inputId="ts-month-select"
-          defaultValue={strToObj(monthNow)}
-          options={months.map(strToObj)}
-        />
-        <Label
-          label="Year"
-          htmlFor="ts-year-select"
-          className="col-start-7 col-span-2 justify-self-center"
-        />
-        <Select
-          name="year"
-          className="col-span-4"
-          inputId="ts-year-select"
-          defaultValue={strToObj(yearNow)}
-          options={years.map(strToObj)}
-        />{" "}
-      </div>
-
       <div className="grid grid-cols-12 gap-1">
         {/* Projects Col */}
         <div className="col-span-9 flex flex-col gap-1">
@@ -199,7 +161,6 @@ const Form = ({
       </div>
       <button
         type="submit"
-        form={formId}
         className="text-white p-1 rounded border-2 border-solid border-factorial bg-factorial cursor-pointer"
       >
         Generate Timesheet
