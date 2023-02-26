@@ -1,9 +1,9 @@
 {
   "files": {
-    "main.js": "/main.js",
+    "main.js": "/bundle.js",
     "27.chunk.js": "/27.chunk.js"
   },
   "entrypoints": [
-    "main.js"
+    "bundle.js"
   ]
 }

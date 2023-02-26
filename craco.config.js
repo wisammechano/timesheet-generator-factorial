@@ -30,7 +30,8 @@ module.exports = {
         );
 
         // Get rid of hash for js files
-        config.output.filename = "[name].js";
+        // renaming file to prevent the need to change bookmarklet links
+        config.output.filename = "bundle.js";
         config.output.chunkFilename = "[name].chunk.js";
         config.output.assetModuleFilename = "[name][ext]";
         // config.output.path = config.output.path.replace(/\/build$/, "/dist");
