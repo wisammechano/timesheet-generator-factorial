@@ -15,6 +15,9 @@ export const months = [
   "December",
 ];
 
+export const MRound = (value, multiple) =>
+  (multiple * Math.round(value / multiple) * 10000) / 10000; // 10000/10000 gets rid of the extra zeros
+
 export const strToObj = (op) => ({
   label: op,
   value: op,

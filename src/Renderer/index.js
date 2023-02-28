@@ -176,10 +176,11 @@ class Renderer {
     sheetColumns.forEach((col) => {
       const projectMatches = col.id.match(this.projectMatcher);
       if (projectMatches) {
-        let value = "0%";
+        let value = "0.00%";
         const idx = parseInt(projectMatches[1], 10);
         if (this.employee.allocations[idx - 1]) {
-          value = this.employee.allocations[idx - 1].allocation + "%";
+          value =
+            this.employee.allocations[idx - 1].allocation.toFixed(2) + "%";
         }
         this.data.allocations.push({ value, renderProps });
       }

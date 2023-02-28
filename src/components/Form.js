@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
-import { strToObj } from "../utils";
+import { MRound, strToObj } from "../utils";
 
 const emptyAlloc = [
   {
@@ -154,7 +154,10 @@ const Form = ({
         <div className="col-span-3 px-1 my-3 self-center">
           <p className={`${isOverAlloc ? "text-factorial" : "text-gray-500"}`}>
             <strong>
-              {allocations.reduce((a, v) => a + Math.max(0, v.allocation), 0)}%
+              {allocations
+                .reduce((a, v) => a + Math.max(0, v.allocation), 0)
+                .toFixed(2)}
+              %
             </strong>
           </p>
         </div>
@@ -179,37 +182,51 @@ export const Label = ({ label, children, className = "", ...props }) => (
   </label>
 );
 
-const Range = ({ formName, value, min = 0, max = 100, onChange, ...props }) => {
-  const [_value, setValue] = useState(value);
+const Range = ({
+  formName,
+  value,
+  min = 0,
+  max = 100,
+  precision = 2,
+  onChange,
+  ...props
+}) => {
+  const [_valueNum, setValueNum] = useState(value);
+  const [_valueStr, setValueStr] = useState(value.toFixed(precision));
 
   useEffect(() => {
-    setValue(value);
-  }, [value]);
+    setValueStr(value < 0 ? "" : value.toFixed(precision));
+  }, [value, precision]);
 
   const onChangeInternal = (e) => {
-    const v = e.target.value;
-    const n = parseInt(v, 10);
-    if (isNaN(n)) {
-      setValue(-1);
-      onChange(-1);
-    } else {
-      if (n > max) {
-        setValue(max);
-        onChange(max);
-      } else if (n < min) {
-        setValue(min);
-        onChange(min);
+    const v = e.target.value.trim();
+    const n = parseFloat(v.slice[-1] === "." ? v + "0" : v);
+    const regex = new RegExp(`^[\\d]{1,3}(\\.{1}[\\d]{0,${precision}})?$`);
+
+    if (regex.test(v) || v === "") {
+      // debugger;
+      if (isNaN(n)) {
+        setValueNum(-1);
+        setValueStr("");
       } else {
-        setValue(n);
-        onChange(n);
+        if (n > max) {
+          setValueNum(max);
+          setValueStr(max.toFixed(precision));
+        } else if (n < min) {
+          setValueNum(min);
+          setValueStr(min.toFixed(precision));
+        } else {
+          setValueNum(n);
+          setValueStr(v);
+        }
       }
     }
   };
 
-  const renderedValue = _value === -1 ? `` : `${_value}`;
+  const renderedValue = _valueStr;
 
   return (
-    <div className="flex items-center text-center w-12 h-full">
+    <div className="flex items-center text-center w-14 h-full">
       <input
         className="py-1 px-1 max-w-full border border-solid border-gray-300 rounded-l border-r-0 h-full bg-white outline-none inline-block"
         type="text"
@@ -219,6 +236,7 @@ const Range = ({ formName, value, min = 0, max = 100, onChange, ...props }) => {
         placeholder=""
         value={renderedValue}
         onChange={onChangeInternal}
+        onBlur={() => onChange?.(MRound(_valueNum, 0.1))}
         name={formName}
         {...props}
       />
