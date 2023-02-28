@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import Factorial from "../API/Factorial";
+import { MRound } from "../utils";
 
 export const renderers = {
   date: function ({ day }) {
@@ -132,5 +133,5 @@ export const renderers = {
 };
 
 function computeAllocation(allocation, workingHrs) {
-  return 0.25 * Math.round((allocation * workingHrs) / 0.25);
+  return MRound(allocation * workingHrs, 0.25);
 }
