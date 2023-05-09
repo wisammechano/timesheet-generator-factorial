@@ -2,6 +2,14 @@ import dayjs from "dayjs";
 import Factorial from "../API/Factorial";
 import { MRound } from "../utils";
 
+const extractLeaveById = (VacID, vacations) => {
+  const vacsDuration = vacations
+    .filter((v) => v.type === VacID)
+    .reduce((a, v) => a + v.duration, 0);
+  const hasThisLeave = vacsDuration > 0;
+  return hasThisLeave ? [vacsDuration, vacsDuration.toFixed(2)] : [0, ""];
+};
+
 export const renderers = {
   date: function ({ day }) {
     return day.format("ddd DD/MMM YY");
@@ -25,54 +33,56 @@ export const renderers = {
 
     return finishTime.format("hh:mm");
   },
-  work_hours: function ({ vacation, isOffDay }) {
+  work_hours: function ({ vacations, isOffDay }) {
     if (isOffDay) return "";
 
-    const workHrs = this.employee.workingHrs - vacation.duration;
+    const vacsDuration = vacations.reduce((a, v) => a + v.duration, 0);
+
+    const workHrs = this.employee.workingHrs - vacsDuration;
     return [workHrs, workHrs.toFixed(2)];
   },
-  leave_parental: function ({ vacation, isOffDay }) {
+  leave_parental: function ({ vacations, isOffDay }) {
     if (isOffDay) return "";
 
-    const isParental = vacation.type === Factorial.LEAVES.PARENTAL.name;
-    return isParental
-      ? [vacation.duration, vacation.duration.toFixed(2)]
-      : [0, ""];
+    const VacID = Factorial.LEAVES.PARENTAL.name;
+
+    return extractLeaveById(VacID, vacations);
   },
-  leave_parental_sick: function ({ vacation, isOffDay }) {
+  leave_parental_sick: function ({ vacations, isOffDay }) {
     if (isOffDay) return "";
 
     // not tracked on factorial
-    const isParentalSick = false;
-    return isParentalSick
-      ? [vacation.duration, vacation.duration.toFixed(2)]
-      : [0, ""];
+    // const VacID = "BlahBlahBlah"
+
+    return [0, ""]; //extractLeaveById(VacID, vacations)
   },
-  leave_compassionate: function ({ vacation, isOffDay }) {
+  leave_compassionate: function ({ vacations, isOffDay }) {
     if (isOffDay) return "";
 
     // has 2 names on factorial
-    const isCompassionate =
-      vacation.type === Factorial.LEAVES.COMPASSIONATE.name ||
-      vacation.type === "compassionate";
+    const VacID1 = Factorial.LEAVES.COMPASSIONATE.name;
+    const VacID2 = "compassionate";
+
+    const [duration1] = extractLeaveById(VacID1, vacations);
+    const [duration2] = extractLeaveById(VacID2, vacations);
+    const totalDuration = duration1 + duration2;
+    const isCompassionate = totalDuration > 0;
 
     return isCompassionate
-      ? [vacation.duration, vacation.duration.toFixed(2)]
+      ? [totalDuration, totalDuration.toFixed(2)]
       : [0, ""];
   },
-  leave_sick: function ({ vacation, isOffDay }) {
+  leave_sick: function ({ vacations, isOffDay }) {
     if (isOffDay) return "";
+    const VacID = Factorial.LEAVES.SICK.name;
 
-    const isSick = vacation.type === Factorial.LEAVES.SICK.name;
-    return isSick ? [vacation.duration, vacation.duration.toFixed(2)] : [0, ""];
+    return extractLeaveById(VacID, vacations);
   },
-  leave_vacation: function ({ vacation, isOffDay }) {
+  leave_vacation: function ({ vacations, isOffDay }) {
     if (isOffDay) return "";
+    const VacID = Factorial.LEAVES.HOLIDAY.name;
 
-    const isVacation = vacation.type === Factorial.LEAVES.HOLIDAY.name;
-    return isVacation
-      ? [vacation.duration, vacation.duration.toFixed(2)]
-      : [0, ""];
+    return extractLeaveById(VacID, vacations);
   },
   total_hours: function ({ isOffDay }) {
     if (isOffDay) return "";
@@ -133,5 +143,5 @@ export const renderers = {
 };
 
 function computeAllocation(allocation, workingHrs) {
-  return MRound(allocation * workingHrs, 0.25);
+  return MRound(allocation * workingHrs, 0.01);
 }

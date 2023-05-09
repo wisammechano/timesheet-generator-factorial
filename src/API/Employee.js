@@ -110,24 +110,22 @@ class Employee {
 
   getLeaveHours(date) {
     const dateTs = dayjs(date).unix();
-    const leave = this.leaves.find((leave) => {
+    const leaves = this.leaves.filter((leave) => {
       const { startOn, finishOn } = leave;
       if (dateTs >= startOn.unix() && dateTs <= finishOn.unix()) {
-        return true;
+        return true && !!leave.approved;
       }
       return false;
     });
 
-    if (leave && leave.approved) {
+    return leaves.map((leave) => {
       const duration = leave.isHalfDay ? this.workingHrs / 2 : this.workingHrs;
       return {
         duration,
         type: leave.type,
         approved: leave.approved,
       };
-    } else {
-      return { type: "", duration: 0 };
-    }
+    });
   }
 
   setAllocations(allocations) {
