@@ -236,7 +236,7 @@ const Range = ({
         placeholder=""
         value={renderedValue}
         onChange={onChangeInternal}
-        onBlur={() => onChange?.(MRound(_valueNum, 0.1))}
+        onBlur={() => onChange?.(MRound(_valueNum, 0.01))}
         name={formName}
         {...props}
       />
