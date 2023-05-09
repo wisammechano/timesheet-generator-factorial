@@ -106,14 +106,14 @@ class Renderer {
         continue;
       }
 
-      const vacation = this.employee.getLeaveHours(day);
+      const vacations = this.employee.getLeaveHours(day);
       const isOffDay = this.employee.isOffDay(day);
       const columns = [];
 
       sheetColumns.forEach(({ id }) => {
         // we should only log date
         // render may return a tuple for numeric values to count totals
-        const render = renderers[id].call(this, { day, vacation, isOffDay });
+        const render = renderers[id].call(this, { day, vacations, isOffDay });
         let value = render;
         if (Array.isArray(render) && this.data.totals.hasOwnProperty(id)) {
           this.data.totals[id] += render[0];
